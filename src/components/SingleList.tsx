@@ -1,4 +1,4 @@
-import {useState} from "react";
+import { useState, useRef, useEffect } from "react";
 import { Item } from "../model";
 
 interface Props {
@@ -8,7 +8,8 @@ interface Props {
 }
 
 const SingleList: React.FC<Props> = ({ item, items, setItems }) => {
-const [edit, setEdit] = useState<boolean>(false)
+  const [edit, setEdit] = useState<boolean>(false);
+  const [editItem, setEditItem] = useState<string>(item.item);
 
   const doneHandler = (id: number) => {
     setItems(
@@ -22,12 +23,43 @@ const [edit, setEdit] = useState<boolean>(false)
     setItems(items.filter((item) => item.id !== id));
   };
 
+  const editHandler = (e: React.FormEvent, id: number) => {
+    e.preventDefault();
+
+    setItems(
+      items.map((item) => (item.id === id ? { ...item, item: editItem } : item))
+    );
+    setEdit(false);
+  };
+
+  const inputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, [edit]);
+
   return (
-    <form className="glass">
-      {item.isDone ? <s>{item.item}</s> : <span>{item.item}</span>}
+    <form className="glass" onSubmit={(e) => editHandler(e, item.id)}>
+      {edit ? (
+        <input
+          ref={inputRef}
+          value={editItem}
+          onChange={(e) => setEditItem(e.target.value)}
+          className="glass__two"
+        />
+      ) : item.isDone ? (
+        <s>{item.item}</s>
+      ) : (
+        <span>{item.item}</span>
+      )}
 
       <div className="flex justify-end">
-        <span>
+        <span
+          onClick={() => {
+            if (!edit && !item.isDone) {
+              setEdit(!edit);
+            }
+          }}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"

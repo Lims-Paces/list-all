@@ -15,7 +15,7 @@ const InputField: React.FC<Props> = ({ item, setItem, handleAdd }) => {
       <input
         type="input"
         placeholder="Enter your item"
-        className="pt-[20px] pb-[20px] pl-[20px] w-full rounded-[50px] text-slate-950"
+        className="pt-[20px] pb-[20px] pl-[20px] w-full rounded-[50px] text-slate-950 outline-none"
         value={item}
         onChange={(e) => setItem(e.target.value)}
       />
